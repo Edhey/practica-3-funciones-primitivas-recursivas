@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wpedantic -Weffc++")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # tell cmake where to look for *.h files
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 # Automatically add all .cc files
 file(GLOB_RECURSE ALL_CC_FILES "${PROJECT_SOURCE_DIR}/src/*.cc")
