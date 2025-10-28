@@ -17,11 +17,12 @@
 #ifndef PRIMITIVE_RECURSIVE_FUNCTION_H
 #define PRIMITIVE_RECURSIVE_FUNCTION_H
 
+#include <expected>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "src/counter/counter.h"
+#include "counter/counter.h"
 
 /**
  * @brief Interface for all primitive recursive functions
@@ -30,18 +31,8 @@ class PrimitiveRecursiveFunction {
 public:
   virtual ~PrimitiveRecursiveFunction() = default;
 
-  /**
-   * @brief Applies the function to the given arguments
-   * @param args Vector of natural numbers (arguments)
-   * @return Result of applying the function
-   */
-  virtual unsigned int apply(const std::vector<unsigned int>& args) const;
-
-  /**
-   * @brief Gets the name of the function
-   * @return Function name as string
-   */
-  virtual std::string getName() const = 0;
+  virtual std::expected<unsigned int, std::string> apply(
+      const std::vector<unsigned int>& args) const;
 
   /**
    * @brief Gets a string representation of the function
@@ -49,10 +40,32 @@ public:
    */
   virtual std::string toString() const { return getName(); }
 
+  /**
+   * @brief Gets the arity (number of arguments) of the function
+   * @return Number of arguments expected
+   */
+  int getArity() const { return arity_; }
+
+  /**
+   * @brief Gets the name of the function
+   * @return Function name as string
+   */
+  virtual std::string getName() const = 0;
+
+protected:
+  PrimitiveRecursiveFunction(std::shared_ptr<Counter> counter, int arity)
+      : counter_(counter), arity_(arity) {}
+
+  /**
+   * @brief Implementation of the function logic
+   * @param args Vector of arguments
+   * @return Expected result or error message
+   */
+  virtual std::expected<unsigned int, std::string> function(
+      const std::vector<unsigned int>& args) const = 0;
+
 private:
   std::shared_ptr<Counter> counter_;
-  virtual unsigned int function(
-      const std::vector<unsigned int>& args) const = 0;
   int arity_;
 };
 
