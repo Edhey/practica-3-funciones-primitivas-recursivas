@@ -107,7 +107,7 @@ std::optional<std::string> Validator::checkRecursionDepth(unsigned int depth) {
  */
 std::optional<std::string> Validator::validateProjectionIndex(size_t index,
                                                               size_t arity) {
-  if (index == 0 || index > arity) {
+  if (index <= 0 || index > arity) {
     return "Projection index " + std::to_string(index) +
            " is out of bounds for arity " + std::to_string(arity);
   }
