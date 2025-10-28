@@ -18,8 +18,8 @@
 
 std::expected<unsigned int, std::string> Projection::function(
     const std::vector<unsigned int>& args) const {
-  if (!construction_error_.empty()) {
-    return std::unexpected(construction_error_);
+  if (auto error = Validator::validateProjectionIndex(index_, getArity())) {
+    return std::unexpected(*error);
   }
   return args[index_ - 1];
 }

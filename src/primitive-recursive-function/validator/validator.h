@@ -30,8 +30,8 @@
 class Validator {
 public:
   static constexpr unsigned int MAX_SAFE_VALUE = 1000000;
-  static constexpr unsigned int MAX_RECURSION_DEPTH = 10000;
-  
+  static constexpr unsigned int MAX_PrimitiveRecursion_DEPTH = 10000;
+
   static std::optional<std::string> validateNatural(
       const std::vector<int>& args);
   static std::optional<std::string> validateArity(
@@ -40,7 +40,8 @@ public:
       unsigned int a, unsigned int b);
   static std::expected<unsigned int, std::string> checkAdditionOverflow(
       unsigned int a, unsigned int b);
-  static std::optional<std::string> checkRecursionDepth(unsigned int depth);
+  static std::optional<std::string> checkPrimitiveRecursionDepth(
+      unsigned int depth);
   static std::optional<std::string> validateProjectionIndex(size_t index,
                                                             size_t arity);
 };

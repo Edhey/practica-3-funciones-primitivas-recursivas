@@ -26,7 +26,7 @@ std::optional<std::string> Validator::validateNatural(
   for (size_t i = 0; i < args.size(); ++i) {
     if (args[i] < 0) {
       return "Argument " + std::to_string(i + 1) +
-             " must be operand_1 natural number (>= 0), got: " +
+             " must be a natural number (>= 0), got: " +
              std::to_string(args[i]);
     }
     if (static_cast<unsigned int>(args[i]) > MAX_SAFE_VALUE) {
@@ -86,14 +86,15 @@ std::expected<unsigned int, std::string> Validator::checkAdditionOverflow(
 }
 
 /**
- * @brief Checks if recursion depth is within safe limits
- * @param depth Current recursion depth
+ * @brief Checks if PrimitiveRecursion depth is within safe limits
+ * @param depth Current PrimitiveRecursion depth
  * @return std::nullopt if valid, error message otherwise
  */
-std::optional<std::string> Validator::checkRecursionDepth(unsigned int depth) {
-  if (depth > MAX_RECURSION_DEPTH) {
-    return "Recursion depth exceeds maximum (" +
-           std::to_string(MAX_RECURSION_DEPTH) +
+std::optional<std::string> Validator::checkPrimitiveRecursionDepth(
+    unsigned int depth) {
+  if (depth > MAX_PrimitiveRecursion_DEPTH) {
+    return "PrimitiveRecursion depth exceeds maximum (" +
+           std::to_string(MAX_PrimitiveRecursion_DEPTH) +
            "), got: " + std::to_string(depth);
   }
   return std::nullopt;

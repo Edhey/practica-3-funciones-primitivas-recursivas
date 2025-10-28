@@ -20,8 +20,8 @@
 #include <expected>
 #include <memory>
 
-#include "primitive-recursive-function.h"
 #include "counter/counter.h"
+#include "primitive-recursive-function/primitive-recursive-function.h"
 
 /**
  * @brief Zero primitive function: z(n) = 0
