@@ -33,13 +33,12 @@
 #include "primitive-recursive-function/validator/validator.h"
 
 template <typename ArgsType, typename ReturnType>
-class Combination : public FunctionOperator<ArgsType, ReturnType> {
+class Combination : public FunctionOperator<ArgsType, std::vector<ReturnType>> {
 public:
-  Combination(std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
-              ReturnType >>> first,
-              std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
-              ReturnType >>> second)
-      : FunctionOperator<ArgsType, ReturnType>(first->getArity()),
+  Combination(
+      std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> first,
+      std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> second)
+      : FunctionOperator<ArgsType, std::vector<ReturnType>>(first->getArity()),
         first_(first),
         second_(std::move(second)),
         construction_error_("") {
@@ -70,10 +69,8 @@ private:
       const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
           second);
 
-  std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
-      ReturnType >>> first_;
-  std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
-      ReturnType >>> second_;
+  std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> first_;
+  std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> second_;
   std::string construction_error_;
 };
 

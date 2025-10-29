@@ -16,6 +16,7 @@
 
 #include "product.h"
 
+#include "../../operators/combination/combination.h"
 #include "../../operators/composition/composition.h"
 #include "../../operators/primitive-recursion/primitive-recursion.h"
 #include "../../primitives/projection/projection.h"
@@ -23,23 +24,37 @@
 #include "../sum/sum.h"
 
 Product::Product(std::shared_ptr<Counter> counter)
-    : PrimitiveRecursiveFunction(counter, 2) {
+    : PrimitiveRecursiveFunction(counter, 2), implementation_(nullptr) {
   // product(x, 0) = 0
-  // Base case: product(x, 0) = g(x) = Zero(x) = 0
+  // Base case: g(x) = Zero()
   auto base_case = std::make_shared<Zero>(counter);
 
-  // product(x, s(y)) = h(x, y, product(x, y)) =
-  //                                = sum([P^3_1 x P^3_3](x, y, product(x, y)))
+  // product(x, s(y)) = h(x, y, product(x, y)) = sum(P³₁(x,y,z), P³₃(x,y,z))
   auto sum = std::make_shared<Sum>(counter);
   auto projection3_1 = std::make_shared<Projection>(3, 1, counter);
   auto projection3_3 = std::make_shared<Projection>(3, 3, counter);
-  auto recursive_case = std::make_shared<Composition<unsigned int, unsigned int>>(
-      sum, std::vector<std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>>{projection3_1, projection3_3});
-  auto recursion = std::make_shared<PrimitiveRecursion<unsigned int, unsigned int>>(base_case, recursive_case);
+
+  // Create combination: (P³₁ × P³₃)
+  auto combination = std::make_shared<Combination<unsigned int, unsigned int>>(
+      projection3_1, projection3_3);
+
+  // Compose: sum ∘ (P³₁ × P³₃)
+  auto recursive_case =
+      std::make_shared<Composition<unsigned int, unsigned int>>(sum,
+                                                                combination);
+
+  // Build primitive recursion
+  auto recursion =
+      std::make_shared<PrimitiveRecursion<unsigned int, unsigned int>>(
+          base_case, recursive_case);
+
   implementation_ = recursion;
 }
 
 std::expected<unsigned int, std::string> Product::function(
     const std::vector<unsigned int>& args) const {
+  if (!implementation_) {
+    return std::unexpected("Product function not properly initialized");
+  }
   return implementation_->apply(args);
 }

@@ -27,9 +27,11 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "counter/counter.h"
+#include "primitive-recursive-function/operators/combination/combination.h"
 #include "primitive-recursive-function/operators/function-operator.h"
 #include "primitive-recursive-function/validator/validator.h"
 
@@ -37,7 +39,7 @@
  * @brief Composition combinator: f(x) = h(g1(x), ..., gm(x))
  *
  * Applies inner functions to the arguments, then applies the outer function
- * to the results.
+ * to the results. Can handle both single-value and multi-value inner functions.
  */
 template <typename ArgsType, typename ReturnType>
 class Composition : public FunctionOperator<ArgsType, ReturnType> {
@@ -49,21 +51,42 @@ public:
           inner)
       : FunctionOperator<ArgsType, ReturnType>(inner[0]->getArity()),
         outer_(outer),
-        inner_(std::move(inner)),
+        inner_single_(std::move(inner)),
+        combination_(nullptr),
         construction_error_("") {
-    if (auto error = validate(outer_, inner_)) {
+    if (auto error = validate(outer_, inner_single_)) {
       construction_error_ = *error;
+    }
+  }
+  Composition(
+      std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> outer,
+      std::shared_ptr<Combination<ArgsType, ReturnType>> combination)
+      : FunctionOperator<ArgsType, ReturnType>(combination->getArity()),
+        outer_(outer),
+        inner_single_(),
+        combination_(combination),
+        construction_error_("") {
+    // Validate that outer arity matches combination output size (2)
+    if (outer->getArity() != 2) {
+      construction_error_ = "Outer function arity (" +
+                            std::to_string(outer->getArity()) +
+                            ") must be 2 to match combination output";
     }
   }
   std::string getName() const override { return "Composition"; }
   std::string toString() const override {
-    std::string result = outer_->toString() + "∘(";
-    for (size_t i = 0; i < inner_.size(); ++i) {
-      if (i > 0)
-        result += ", ";
-      result += inner_[i]->toString();
+    std::string result = outer_->toString() + "∘";
+    if (combination_) {
+      result += combination_->toString();
+    } else {
+      result += "(";
+      for (size_t i = 0; i < inner_single_.size(); ++i) {
+        if (i > 0)
+          result += ", ";
+        result += inner_single_[i]->toString();
+      }
+      result += ")";
     }
-    result += ")";
     return result;
   }
 
@@ -76,10 +99,10 @@ private:
       const std::vector<
           std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>&
           inner);
-
   std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> outer_;
   std::vector<std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>
-      inner_;
+      inner_single_;
+  std::shared_ptr<Combination<ArgsType, ReturnType>> combination_;
   std::string construction_error_;
 };
 
@@ -95,20 +118,25 @@ Composition<ArgsType, ReturnType>::function(
     return std::unexpected(*error);
   }
 
-  // Evaluate all inner functions
-  std::vector<unsigned int> inner_results;
-  inner_results.reserve(inner_.size());
-
-  for (const auto& func : inner_) {
-    auto result = func->apply(args);
-    if (!result.has_value()) {
-      return std::unexpected("Inner function " + func->getName() +
-                             " failed: " + result.error());
+  std::vector<ArgsType> inner_results;
+  if (combination_) {
+    auto combo_result = combination_->apply(args);
+    if (!combo_result.has_value()) {
+      return std::unexpected("Combination failed: " + combo_result.error());
     }
-    inner_results.push_back(result.value());
+    inner_results = combo_result.value();
+  } else {
+    inner_results.reserve(inner_single_.size());
+    for (const auto& func : inner_single_) {
+      auto result = func->apply(args);
+      if (!result.has_value()) {
+        return std::unexpected("Inner function " + func->getName() +
+                               " failed: " + result.error());
+      }
+      inner_results.push_back(result.value());
+    }
   }
 
-  // Apply outer function to results
   auto outer_result = outer_->apply(inner_results);
   if (!outer_result.has_value()) {
     return std::unexpected("Outer function " + outer_->getName() +

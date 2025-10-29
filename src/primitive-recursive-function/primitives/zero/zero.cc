@@ -22,6 +22,6 @@
  * @return Always returns 0
  */
 std::expected<unsigned int, std::string> Zero::function(
-    const std::vector<unsigned int>& args) const {
+    const std::vector<unsigned int>&) const {
   return 0;
 }
