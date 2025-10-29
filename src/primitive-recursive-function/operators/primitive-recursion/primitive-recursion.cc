@@ -16,25 +16,12 @@
 
 #include "primitive-recursion.h"
 
-std::expected<std::shared_ptr<PrimitiveRecursion>, std::string>
-PrimitiveRecursion::create(
-    std::shared_ptr<PrimitiveRecursiveFunction> base_case,
-    std::shared_ptr<PrimitiveRecursiveFunction> recursive_case) {
-  // Validate inputs
-  if (auto error = validate(base_case, recursive_case)) {
-    return std::unexpected(*error);
-  }
-
-  // Arity is base_case arity + 1 (for the recursion parameter)
-  const int arity = base_case->getArity() + 1;
-
-  // Use private constructor with new and wrap in shared_ptr
-  auto recursion = std::shared_ptr<PrimitiveRecursion>(
-      new PrimitiveRecursion(base_case, std::move(recursive_case), arity));
-
-  return recursion;
-}
-
+/**
+ * @brief Validates recursion structure
+ * @param base_case base case function
+ * @param recursive_case recursive case function
+ * @return error message if invalid, std::nullopt if valid
+ */
 std::optional<std::string> PrimitiveRecursion::validate(
     const std::shared_ptr<PrimitiveRecursiveFunction>& base_case,
     const std::shared_ptr<PrimitiveRecursiveFunction>& recursive_case) {
@@ -62,16 +49,10 @@ std::optional<std::string> PrimitiveRecursion::validate(
 
 std::expected<unsigned int, std::string> PrimitiveRecursion::function(
     const std::vector<unsigned int>& args) const {
-  // This should never be called if construction failed
   if (!construction_error_.empty()) {
     return std::unexpected("Cannot execute recursion: " + construction_error_);
   }
 
-  return apply(args);
-}
-
-std::expected<unsigned int, std::string> PrimitiveRecursion::apply(
-    const std::vector<unsigned int>& args) const {
   if (auto error = Validator::validateArity(args, getArity())) {
     return std::unexpected(*error);
   }

@@ -33,30 +33,6 @@
 class Projection : public PrimitiveRecursiveFunction {
 public:
   /**
-   * @brief Factory method to create a Projection with validation
-   * @param arity Total number of arguments (n)
-   * @param index Index of the argument to project (i), 1-based
-   * @param counter Shared pointer to call counter
-   * @return Expected containing shared_ptr to Projection or error message
-   */
-  static std::expected<std::shared_ptr<Projection>, std::string> create(
-      size_t arity, size_t index, std::shared_ptr<Counter> counter) {
-    if (auto error = Validator::validateProjectionIndex(index, arity)) {
-      return std::unexpected(*error);
-    }
-    return std::shared_ptr<Projection>(new Projection(arity, index, counter));
-  }
-
-  std::string getName() const override {
-    return "P^" + std::to_string(getArity()) + "_" + std::to_string(index_);
-  }
-
-protected:
-  std::expected<unsigned int, std::string> function(
-      const std::vector<unsigned int>& args) const override;
-
-private:
-  /**
    * @brief Private constructor - use create() factory method instead
    * @param arity Total number of arguments (n)
    * @param index Index of the argument to project (i), 1-based
@@ -65,6 +41,13 @@ private:
   Projection(size_t arity, size_t index, std::shared_ptr<Counter> counter)
       : PrimitiveRecursiveFunction(counter, arity), index_(index) {}
 
+  std::string getName() const override {
+    return "P^" + std::to_string(getArity()) + "_" + std::to_string(index_);
+  }
+
+private:
+std::expected<unsigned int, std::string> function(
+    const std::vector<unsigned int>& args) const override;
   size_t index_;
 };
 

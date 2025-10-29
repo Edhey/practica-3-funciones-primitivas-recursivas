@@ -39,42 +39,6 @@
 class PrimitiveRecursion : public FunctionOperator {
 public:
   /**
-   * @brief Factory method to create a PrimitiveRecursion with validation
-   * @param base_case Function g for base case
-   * @param recursive_case Function h for recursive case
-   * @return Expected containing shared pointer to PrimitiveRecursion or error
-   * message
-   */
-  static std::expected<std::shared_ptr<PrimitiveRecursion>, std::string> create(
-      std::shared_ptr<PrimitiveRecursiveFunction> base_case,
-      std::shared_ptr<PrimitiveRecursiveFunction> recursive_case);
-
-  std::expected<unsigned int, std::string> apply(
-      const std::vector<unsigned int>& args) const override;
-
-  std::string getName() const override { return "PrimitiveRecursion"; }
-
-  std::string toString() const override {
-    return getName() + "(" + base_case_->getName() + ", " +
-           recursive_case_->getName() + ")";
-  }
-
-  /**
-   * @brief Check if the recursion was constructed successfully
-   */
-  bool isValid() const { return construction_error_.empty(); }
-
-  /**
-   * @brief Get construction error message if any
-   */
-  std::string getConstructionError() const { return construction_error_; }
-
-protected:
-  std::expected<unsigned int, std::string> function(
-      const std::vector<unsigned int>& args) const override;
-
-private:
-  /**
    * @brief Private constructor - use create() factory method instead
    */
   PrimitiveRecursion(std::shared_ptr<PrimitiveRecursiveFunction> base_case,
@@ -83,12 +47,20 @@ private:
       : FunctionOperator(arity),
         base_case_(base_case),
         recursive_case_(std::move(recursive_case)),
-        construction_error_("") {}
+        construction_error_("") {
+    if (auto error = validate(base_case_, recursive_case_)) {
+      construction_error_ = *error;
+    }
+  }
+  std::string getName() const override { return "PrimitiveRecursion"; }
+  std::string toString() const override {
+    return getName() + "(" + base_case_->toString() + ", " +
+           recursive_case_->toString() + ")";
+  }
 
-  /**
-   * @brief Validates recursion structure
-   * @return std::nullopt if valid, error message otherwise
-   */
+private:
+  std::expected<unsigned int, std::string> function(
+      const std::vector<unsigned int>& args) const override;
   static std::optional<std::string> validate(
       const std::shared_ptr<PrimitiveRecursiveFunction>& base_case,
       const std::shared_ptr<PrimitiveRecursiveFunction>& recursive_case);

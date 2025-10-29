@@ -32,23 +32,27 @@ public:
 
   std::string getOperation() const { return operation_; }
   std::vector<unsigned int> getArguments() const { return arguments_; }
+  std::string getInputFile() const { return input_file_; }
   std::string getOutputFile() const { return output_file_; }
   bool isVerboseMode() const { return verbose_mode_; }
   bool isTraceMode() const { return trace_mode_; }
 
 private:
   ArgsParser(const std::string& operation,
-             const std::vector<unsigned int>& arguments,
+             const std::vector<unsigned int>& arguments = {},
+             const std::string& input_file = "",
              const std::string& output_file = "", bool verbose_mode = false,
              bool trace_mode = false)
       : operation_(operation),
         arguments_(arguments),
+        input_file_(input_file),
         output_file_(output_file),
         verbose_mode_(verbose_mode),
         trace_mode_(trace_mode) {}
 
   std::string operation_;
   std::vector<unsigned int> arguments_;
+  std::string input_file_;
   std::string output_file_;
   bool verbose_mode_;
   bool trace_mode_;

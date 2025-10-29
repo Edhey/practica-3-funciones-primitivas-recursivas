@@ -31,37 +31,12 @@ Product::Product(std::shared_ptr<Counter> counter)
   // product(x, s(y)) = h(x, y, product(x, y)) =
   //                                = sum([P^3_1 x P^3_3](x, y, product(x, y)))
   auto sum = std::make_shared<Sum>(counter);
-
-  auto p1_result = Projection::create(3, 1, counter);
-  if (!p1_result.has_value()) {
-    throw std::runtime_error("Failed to create P^3_1 for Product: " +
-                             p1_result.error());
-  }
-  std::shared_ptr<PrimitiveRecursiveFunction> p1 = p1_result.value();
-
-  auto p3_result = Projection::create(3, 3, counter);
-  if (!p3_result.has_value()) {
-    throw std::runtime_error("Failed to create P^3_3 for Product: " +
-                             p3_result.error());
-  }
-  std::shared_ptr<PrimitiveRecursiveFunction> p3 = p3_result.value();
-
-  auto recursive_case_result = Composition::create(
-      sum, std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{p1, p3});
-
-  if (!recursive_case_result.has_value()) {
-    throw std::runtime_error("Failed to create recursive case for Product: " +
-                             recursive_case_result.error());
-  }
-  auto recursive_case = recursive_case_result.value();
-
-  // Build the PrimitiveRecursion
-  auto recursion_result = PrimitiveRecursion::create(base_case, recursive_case);
-  if (!recursion_result.has_value()) {
-    throw std::runtime_error("Failed to create recursion for Product: " +
-                             recursion_result.error());
-  }
-  implementation_ = recursion_result.value();
+  auto projection3_1 = std::make_shared<Projection>(3, 1, counter);
+  auto projection3_3 = std::make_shared<Projection>(3, 3, counter);
+  auto recursive_case = std::make_shared<Composition>(
+      sum, std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{projection3_1, projection3_3});
+  auto recursion = std::make_shared<PrimitiveRecursion>(base_case, recursive_case);
+  implementation_ = recursion;
 }
 
 std::expected<unsigned int, std::string> Product::function(

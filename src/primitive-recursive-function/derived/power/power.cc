@@ -29,52 +29,21 @@ Power::Power(std::shared_ptr<Counter> counter)
   // Base case: power(x, 0) = g(x) = s(Zero(P^1_1(x)))
   auto zero = std::make_shared<Zero>(counter);
   auto successor = std::make_shared<Successor>(counter);
-
-  auto base_case_result = Composition::create(
+  auto base_case = std::make_shared<Composition>(
       successor,
       std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{zero});
 
-  if (!base_case_result.has_value()) {
-    throw std::runtime_error("Failed to create base case for Power: " +
-                             base_case_result.error());
-  }
-  auto base_case = base_case_result.value();
-
-  // power(x, s(y)) = h(x, y, power(x, y)) =
-  //                                   product[P^3_1 x P^3_3](x, y, power(x, y))
+  // Recursive case: power(x, s(y)) = h(x, y, power(x, y)) =
+  //                                = product[P^3_1 x P^3_3](x, y, power(x, y))
   auto product = std::make_shared<Product>(counter);
-
-  auto p1_result = Projection::create(3, 1, counter);
-  if (!p1_result.has_value()) {
-    throw std::runtime_error("Failed to create P^3_1 for Power: " +
-                             p1_result.error());
-  }
-  std::shared_ptr<PrimitiveRecursiveFunction> p1 = p1_result.value();
-
-  auto p3_result = Projection::create(3, 3, counter);
-  if (!p3_result.has_value()) {
-    throw std::runtime_error("Failed to create P^3_3 for Power: " +
-                             p3_result.error());
-  }
-  std::shared_ptr<PrimitiveRecursiveFunction> p3 = p3_result.value();
-
-  auto recursive_case_result = Composition::create(
-      product,
-      std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{p1, p3});
-
-  if (!recursive_case_result.has_value()) {
-    throw std::runtime_error("Failed to create recursive case for Power: " +
-                             recursive_case_result.error());
-  }
-  auto recursive_case = recursive_case_result.value();
-
-  // Build the recursion
-  auto recursion_result = PrimitiveRecursion::create(base_case, recursive_case);
-  if (!recursion_result.has_value()) {
-    throw std::runtime_error("Failed to create recursion for Power: " +
-                             recursion_result.error());
-  }
-  implementation_ = recursion_result.value();
+  auto projection3_1 = std::make_shared<Projection>(3, 1, counter);
+  auto projection3_3 = std::make_shared<Projection>(3, 3, counter);
+  auto recursive_case = std::make_shared<Composition>(
+      product, std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{
+                   projection3_1, projection3_3});
+  auto recursion =
+      std::make_shared<PrimitiveRecursion>(base_case, recursive_case);
+  implementation_ = recursion;
 }
 
 std::expected<unsigned int, std::string> Power::function(

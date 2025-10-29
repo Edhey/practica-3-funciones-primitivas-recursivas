@@ -20,24 +20,6 @@
 
 #include "combination.h"
 
-std::expected<std::shared_ptr<Combination>, std::string> Combination::create(
-    std::shared_ptr<PrimitiveRecursiveFunction> first,
-    std::shared_ptr<PrimitiveRecursiveFunction> second) {
-  // Validate inputs
-  if (auto error = validate(first, second)) {
-    return std::unexpected(*error);
-  }
-
-  // Both functions have the same arity (validated)
-  const int arity = first->getArity();
-
-  // Use private constructor with new and wrap in shared_ptr
-  auto combination = std::shared_ptr<Combination>(
-      new Combination(first, std::move(second), arity));
-
-  return combination;
-}
-
 std::optional<std::string> Combination::validate(
     const std::shared_ptr<PrimitiveRecursiveFunction>& first,
     const std::shared_ptr<PrimitiveRecursiveFunction>& second) {
@@ -62,17 +44,10 @@ std::optional<std::string> Combination::validate(
 
 std::expected<unsigned int, std::string> Combination::function(
     const std::vector<unsigned int>& args) const {
-  // This should never be called if construction failed
   if (!construction_error_.empty()) {
     return std::unexpected("Cannot execute combination: " +
                            construction_error_);
   }
-
-  return apply(args);
-}
-
-std::expected<unsigned int, std::string> Combination::apply(
-    const std::vector<unsigned int>& args) const {
   if (auto error = Validator::validateArity(args, getArity())) {
     return std::unexpected(*error);
   }

@@ -9,31 +9,25 @@
  * @mail: alu0101552392@ull.edu.es
  * @date Oct 27 2025
  * @file composition.cc
- * @brief Implementation of Composition combinator
+ * @brief Composition combinator: h = f ∘ (g1, g2, ..., gm): N^n -> N
+ *                        f: N^m -> N
+ *                        gi,i = 1..m
+ *                        gi: N^n -> N
+ *
+ *                        h: N^n -> N
+ *       X = (x1, x2, ..., xn) e N^n -> h(X) = f(g1(X), g2(X), ..., gm(X))
  * @bug There are no known bugs
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
 #include "composition.h"
 
-std::expected<std::shared_ptr<Composition>, std::string> Composition::create(
-    std::shared_ptr<PrimitiveRecursiveFunction> outer,
-    std::vector<std::shared_ptr<PrimitiveRecursiveFunction>> inner) {
-  // Validate inputs
-  if (auto error = validate(outer, inner)) {
-    return std::unexpected(*error);
-  }
-
-  // All inner functions have the same arity (validated)
-  const int arity = inner[0]->getArity();
-
-  // Use private constructor directly with new and wrap in shared_ptr
-  auto composition = std::shared_ptr<Composition>(
-      new Composition(outer, std::move(inner), arity));
-
-  return composition;
-}
-
+/**
+ * @brief Validates composition structure
+ * @param outer Outer function f that combines the results of inner functions
+ * @param inner Inner functions g1, g2, ..., gm
+ * @return returns std::nullopt if valid, error message otherwise
+ */
 std::optional<std::string> Composition::validate(
     const std::shared_ptr<PrimitiveRecursiveFunction>& outer,
     const std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>& inner) {
@@ -76,17 +70,10 @@ std::optional<std::string> Composition::validate(
 
 std::expected<unsigned int, std::string> Composition::function(
     const std::vector<unsigned int>& args) const {
-  // This should never be called if construction failed
   if (!construction_error_.empty()) {
     return std::unexpected("Cannot execute composition: " +
                            construction_error_);
   }
-
-  return apply(args);
-}
-
-std::expected<unsigned int, std::string> Composition::apply(
-    const std::vector<unsigned int>& args) const {
   if (auto error = Validator::validateArity(args, getArity())) {
     return std::unexpected(*error);
   }

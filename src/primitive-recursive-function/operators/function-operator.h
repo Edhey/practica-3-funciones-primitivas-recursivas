@@ -29,7 +29,7 @@ public:
   virtual ~FunctionOperator() = default;
   FunctionOperator(int arity) : PrimitiveRecursiveFunction(nullptr, arity) {}
   std::expected<unsigned int, std::string> apply(
-      const std::vector<unsigned int>& args) const override;
+      const std::vector<unsigned int>& args) const final override;
 };
 
 #endif  // PRIMITIVE_RECURSIVE_FUNCTION_OPERATOR_H

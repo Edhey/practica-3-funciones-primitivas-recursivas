@@ -25,23 +25,34 @@
 
 void ArgsParser::printUsage(std::string program_name) {
   std::cout << std::format(
-      "Usage: {0} <operation> <arg1> <arg2> [options]\n\n"
+      "Usage: {0} <operation> [<arg1> <arg2> | -i <file>] [options]\n\n"
       "Operations:\n"
       "  sum, add          Calculate x + y\n"
       "  product, mult     Calculate x * y\n"
       "  power, pow        Calculate x^y\n\n"
+      "Input modes:\n"
+      "  Interactive:      {0} <operation>\n"
+      "                    (Enter arguments line by line, Ctrl+D to end)\n"
+      "  Command-line:     {0} <operation> <arg1> <arg2>\n"
+      "  File:             {0} <operation> -i <input_file>\n\n"
       "Arguments:\n"
       "  <arg1> <arg2>     Two natural numbers (>= 0)\n\n"
       "Options:\n"
-      "  -o, --output <file>  Write result to file\n"
+      "  -i, --input <file>   Read arguments from file (one pair per line)\n"
+      "  -o, --output <file>  Write results to file\n"
       "  -v, --verbose        Show function call count\n"
       "  -t, --trace          Show detailed execution trace\n"
       "  -h, --help           Show this help message\n\n"
       "Examples:\n"
-      "  {0} sum 5 3\n"
-      "  {0} power 2 10 -v\n"
-      "  {0} product 7 8 -o result.txt\n"
-      "  {0} pow 3 4 --trace --verbose\n",
+      "  {0} sum              # Interactive mode\n"
+      "  {0} sum 5 3          # Single calculation\n"
+      "  {0} power 2 10 -v    # With call counter\n"
+      "  {0} product -i args.txt -o result.txt  # File I/O\n"
+      "  {0} pow 3 4 --trace --verbose\n\n"
+      "Input file format (one pair per line):\n"
+      "  5 3\n"
+      "  2 10\n"
+      "  7 8\n",
       program_name);
 }
 
@@ -58,45 +69,26 @@ std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
     return std::nullopt;
   }
 
-  if (argc < 4) {
-    std::cerr << "Error: Expected operation and two arguments\n\n";
-    printUsage(argv[0]);
-    return std::nullopt;
-  }
-
   std::string operation = argv[1];
   std::vector<unsigned int> arguments;
-
-  try {
-    for (int i = 2; i <= 3; ++i) {
-      std::string arg = argv[i];
-      if (!arg.empty() && arg[0] == '-') {
-        std::cerr << "Error: Expected natural number (>= 0), got option: "
-                  << arg << "\n";
-        return std::nullopt;
-      }
-
-      long long value = std::stoll(arg);
-      if (value < 0) {
-        std::cerr << "Error: Arguments must be natural numbers (>= 0)\n";
-        return std::nullopt;
-      }
-      arguments.push_back(static_cast<unsigned int>(value));
-    }
-  } catch (const std::exception& e) {
-    std::cerr << "Error: Invalid number format\n";
-    return std::nullopt;
-  }
-
-  // Parse optional flags
+  std::string input_file;
   std::string output_file;
   bool verbose_mode = false;
   bool trace_mode = false;
 
-  for (int i = 4; i < argc; ++i) {
+  // Parse arguments and flags
+  int i = 2;
+  while (i < argc) {
     std::string arg = argv[i];
 
-    if (arg == "-o" || arg == "--output") {
+    if (arg == "-i" || arg == "--input") {
+      if (i + 1 < argc) {
+        input_file = argv[++i];
+      } else {
+        std::cerr << "Error: -i/--input requires a filename\n";
+        return std::nullopt;
+      }
+    } else if (arg == "-o" || arg == "--output") {
       if (i + 1 < argc) {
         output_file = argv[++i];
       } else {
@@ -110,13 +102,41 @@ std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
     } else if (arg == "-h" || arg == "--help") {
       printUsage(argv[0]);
       return std::nullopt;
-    } else {
+    } else if (arg[0] == '-') {
       std::cerr << "Error: Unknown option: " << arg << "\n\n";
       printUsage(argv[0]);
       return std::nullopt;
+    } else {
+      // This is a positional argument (number)
+      try {
+        long long value = std::stoll(arg);
+        if (value < 0) {
+          std::cerr << "Error: Arguments must be natural numbers (>= 0)\n";
+          return std::nullopt;
+        }
+        arguments.push_back(static_cast<unsigned int>(value));
+      } catch (const std::exception& e) {
+        std::cerr << "Error: Invalid number format: " << arg << "\n";
+        return std::nullopt;
+      }
     }
+    ++i;
   }
 
-  return ArgsParser(operation, arguments, output_file, verbose_mode,
+  // Validate input mode
+  if (!input_file.empty() && !arguments.empty()) {
+    std::cerr
+        << "Error: Cannot use both command-line arguments and input file\n";
+    return std::nullopt;
+  }
+
+  if (input_file.empty() && arguments.size() != 0 && arguments.size() != 2) {
+    std::cerr
+        << "Error: Expected 0 arguments (interactive) or 2 arguments, got "
+        << arguments.size() << "\n";
+    return std::nullopt;
+  }
+
+  return ArgsParser(operation, arguments, input_file, output_file, verbose_mode,
                     trace_mode);
 }

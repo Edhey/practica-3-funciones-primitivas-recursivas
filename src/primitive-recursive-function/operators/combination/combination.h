@@ -44,25 +44,12 @@ public:
       std::shared_ptr<PrimitiveRecursiveFunction> first,
       std::shared_ptr<PrimitiveRecursiveFunction> second);
 
-  std::expected<unsigned int, std::string> apply(
-      const std::vector<unsigned int>& args) const override;
-
-  std::string getName() const override {
-    return "Combination(" + first_->getName() + " x " + second_->getName() +
+  std::string toString() const override {
+    return "Combination(" + first_->toString() + " x " + second_->toString() +
            ")";
   }
 
-  std::string toString() const override { return getName(); }
-
-  /**
-   * @brief Check if the combination was constructed successfully
-   */
-  bool isValid() const { return construction_error_.empty(); }
-
-  /**
-   * @brief Get construction error message if any
-   */
-  std::string getConstructionError() const { return construction_error_; }
+  std::string getName() const override { return "Combination"; }
 
 protected:
   std::expected<unsigned int, std::string> function(
