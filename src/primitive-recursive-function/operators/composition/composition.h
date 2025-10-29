@@ -39,15 +39,15 @@
  * Applies inner functions to the arguments, then applies the outer function
  * to the results.
  */
-class Composition : public FunctionOperator {
+template <typename ArgsType, typename ReturnType>
+class Composition : public FunctionOperator<ArgsType, ReturnType> {
 public:
-  /**
-   * @brief Private constructor - use create() factory method instead
-   */
-  Composition(std::shared_ptr<PrimitiveRecursiveFunction> outer,
-              std::vector<std::shared_ptr<PrimitiveRecursiveFunction>> inner,
-              int arity)
-      : FunctionOperator(arity),
+  Composition(
+      std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> outer,
+      std::vector<
+          std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>
+          inner)
+      : FunctionOperator<ArgsType, ReturnType>(inner[0]->getArity()),
         outer_(outer),
         inner_(std::move(inner)),
         construction_error_("") {
@@ -68,15 +68,98 @@ public:
   }
 
 private:
-  std::expected<unsigned int, std::string> function(
-      const std::vector<unsigned int>& args) const override;
+  std::expected<ReturnType, std::string> function(
+      const std::vector<ArgsType>& args) const override;
   static std::optional<std::string> validate(
-      const std::shared_ptr<PrimitiveRecursiveFunction>& outer,
-      const std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>& inner);
+      const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>&
+          outer,
+      const std::vector<
+          std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>&
+          inner);
 
-  std::shared_ptr<PrimitiveRecursiveFunction> outer_;
-  std::vector<std::shared_ptr<PrimitiveRecursiveFunction>> inner_;
+  std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> outer_;
+  std::vector<std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>
+      inner_;
   std::string construction_error_;
 };
+
+template <typename ArgsType, typename ReturnType>
+inline std::expected<ReturnType, std::string>
+Composition<ArgsType, ReturnType>::function(
+    const std::vector<ArgsType>& args) const {
+  if (!construction_error_.empty()) {
+    return std::unexpected("Cannot execute composition: " +
+                           construction_error_);
+  }
+  if (auto error = this->validateArity(args)) {
+    return std::unexpected(*error);
+  }
+
+  // Evaluate all inner functions
+  std::vector<unsigned int> inner_results;
+  inner_results.reserve(inner_.size());
+
+  for (const auto& func : inner_) {
+    auto result = func->apply(args);
+    if (!result.has_value()) {
+      return std::unexpected("Inner function " + func->getName() +
+                             " failed: " + result.error());
+    }
+    inner_results.push_back(result.value());
+  }
+
+  // Apply outer function to results
+  auto outer_result = outer_->apply(inner_results);
+  if (!outer_result.has_value()) {
+    return std::unexpected("Outer function " + outer_->getName() +
+                           " failed: " + outer_result.error());
+  }
+
+  return outer_result.value();
+}
+
+template <typename ArgsType, typename ReturnType>
+inline std::optional<std::string> Composition<ArgsType, ReturnType>::validate(
+    const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>&
+        outer,
+    const std::vector<
+        std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>>&
+        inner) {
+  if (!outer) {
+    return "Outer function cannot be null";
+  }
+
+  if (inner.empty()) {
+    return "Composition requires at least one inner function";
+  }
+
+  // Check for null inner functions
+  for (size_t i = 0; i < inner.size(); ++i) {
+    if (!inner[i]) {
+      return "Inner function at index " + std::to_string(i) + " is null";
+    }
+  }
+
+  // All inner functions must have the same arity
+  const int kInnerArity = inner[0]->getArity();
+  for (size_t i = 1; i < inner.size(); ++i) {
+    if (inner[i]->getArity() != kInnerArity) {
+      return "All inner functions must have the same arity. Function at "
+             "index " +
+             std::to_string(i) + " has arity " +
+             std::to_string(inner[i]->getArity()) + " but expected " +
+             std::to_string(kInnerArity);
+    }
+  }
+
+  // Outer function arity must match number of inner functions
+  if (outer->getArity() != static_cast<int>(inner.size())) {
+    return "Outer function arity (" + std::to_string(outer->getArity()) +
+           ") must match number of inner functions (" +
+           std::to_string(inner.size()) + ")";
+  }
+
+  return std::nullopt;  // Valid
+}
 
 #endif  // COMPOSITION_H

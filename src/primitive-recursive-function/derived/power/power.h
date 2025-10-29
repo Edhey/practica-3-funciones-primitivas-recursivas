@@ -29,7 +29,7 @@
  * - power(x, 0) = 1  (base case)
  * - power(x, s(y)) = product(x, power(x, y))  (recursive case)
  */
-class Power : public PrimitiveRecursiveFunction {
+class Power : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   /**
    * @brief Constructs a Power function
@@ -44,7 +44,7 @@ protected:
       const std::vector<unsigned int>& args) const override;
 
 private:
-  std::shared_ptr<PrimitiveRecursiveFunction> implementation_;
+  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>> implementation_;
 };
 
 #endif  // POWER_H

@@ -24,12 +24,25 @@
 /**
  * @brief Interface for all primitive recursive functions
  */
-class FunctionOperator : public PrimitiveRecursiveFunction {
+template <typename ArgsType, typename ReturnType>
+class FunctionOperator
+    : public PrimitiveRecursiveFunction<ArgsType, ReturnType> {
 public:
   virtual ~FunctionOperator() = default;
-  FunctionOperator(int arity) : PrimitiveRecursiveFunction(nullptr, arity) {}
-  std::expected<unsigned int, std::string> apply(
-      const std::vector<unsigned int>& args) const final override;
+  FunctionOperator(int arity)
+      : PrimitiveRecursiveFunction<ArgsType, ReturnType>(nullptr, arity) {}
+  std::expected<ReturnType, std::string> apply(
+      const std::vector<ArgsType>& args) const final override;
 };
+
+template <typename ArgsType, typename ReturnType>
+inline std::expected<ReturnType, std::string>
+FunctionOperator<ArgsType, ReturnType>::apply(
+    const std::vector<ArgsType>& args) const {
+  if (auto error = this->validateArity(args)) {
+    return std::unexpected(*error);
+  }
+  return this->function(args);
+}
 
 #endif  // PRIMITIVE_RECURSIVE_FUNCTION_OPERATOR_H

@@ -28,7 +28,7 @@
  *
  * Returns 0 for any input argument.
  */
-class Zero : public PrimitiveRecursiveFunction {
+class Zero : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   explicit Zero(std::shared_ptr<Counter> counter)
       : PrimitiveRecursiveFunction(counter, 1) {}

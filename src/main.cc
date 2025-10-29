@@ -50,11 +50,12 @@ std::unique_ptr<OutputStrategy> CreateOutputStrategy(const ArgsParser& args) {
 /**
  * @brief Processes a single set of arguments with the function
  */
-void ProcessArguments(const std::vector<unsigned int>& arguments,
-                      const std::string& operation,
-                      std::shared_ptr<PrimitiveRecursiveFunction> function,
-                      std::shared_ptr<Counter> counter,
-                      OutputStrategy& output_strategy, bool verbose_mode) {
+void ProcessArguments(
+    const std::vector<unsigned int>& arguments, const std::string& operation,
+    std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+        function,
+    std::shared_ptr<Counter> counter, OutputStrategy& output_strategy,
+    bool verbose_mode) {
   // Validate arguments are natural numbers
   std::vector<int> signed_args;
   for (auto arg : arguments) {
@@ -62,12 +63,6 @@ void ProcessArguments(const std::vector<unsigned int>& arguments,
   }
 
   if (auto error = Validator::validateNatural(signed_args)) {
-    std::cerr << "Error: " << *error << std::endl;
-    return;
-  }
-
-  // Validate arity
-  if (auto error = Validator::validateArity(arguments, function->getArity())) {
     std::cerr << "Error: " << *error << std::endl;
     return;
   }
@@ -94,9 +89,11 @@ void ProcessArguments(const std::vector<unsigned int>& arguments,
 /**
  * @brief Main execution loop for processing inputs
  */
-void RunCalculator(std::shared_ptr<PrimitiveRecursiveFunction> function,
-                   InputStrategy& input_strategy,
-                   OutputStrategy& output_strategy, const ArgsParser& args) {
+void RunCalculator(
+    std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+        function,
+    InputStrategy& input_strategy, OutputStrategy& output_strategy,
+    const ArgsParser& args) {
   std::vector<unsigned int> arguments;
 
   // If arguments were provided in command line, use them

@@ -29,7 +29,7 @@
  * - product(x, 0) = 0  (base case: Zero)
  * - product(x, s(y)) = sum(x, product(x, y))  (recursive case)
  */
-class Product : public PrimitiveRecursiveFunction {
+class Product : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   /**
    * @brief Constructs a Product function
@@ -44,7 +44,7 @@ protected:
       const std::vector<unsigned int>& args) const override;
 
 private:
-  std::shared_ptr<PrimitiveRecursiveFunction> implementation_;
+  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>> implementation_;
 };
 
 #endif  // PRODUCT_H

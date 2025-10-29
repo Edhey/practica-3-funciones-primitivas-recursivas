@@ -20,23 +20,24 @@
 #include "../derived/product/product.h"
 #include "../derived/sum/sum.h"
 
-std::shared_ptr<PrimitiveRecursiveFunction> FunctionFactory::createSum(
-    std::shared_ptr<Counter> counter) {
+std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+FunctionFactory::createSum(std::shared_ptr<Counter> counter) {
   return std::make_shared<Sum>(counter);
 }
 
-std::shared_ptr<PrimitiveRecursiveFunction> FunctionFactory::createProduct(
-    std::shared_ptr<Counter> counter) {
+std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+FunctionFactory::createProduct(std::shared_ptr<Counter> counter) {
   return std::make_shared<Product>(counter);
 }
 
-std::shared_ptr<PrimitiveRecursiveFunction> FunctionFactory::createPower(
-    std::shared_ptr<Counter> counter) {
+std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+FunctionFactory::createPower(std::shared_ptr<Counter> counter) {
   return std::make_shared<Power>(counter);
 }
 
-std::shared_ptr<PrimitiveRecursiveFunction> FunctionFactory::createFunction(
-    const std::string& name, std::shared_ptr<Counter> counter) {
+std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+FunctionFactory::createFunction(const std::string& name,
+                                std::shared_ptr<Counter> counter) {
   if (name == "sum" || name == "add" || name == "addition") {
     return createSum(counter);
   } else if (name == "product" || name == "mult" || name == "multiply" ||

@@ -32,17 +32,21 @@
 #include "primitive-recursive-function/primitive-recursive-function.h"
 #include "primitive-recursive-function/validator/validator.h"
 
-class Combination : public FunctionOperator {
+template <typename ArgsType, typename ReturnType>
+class Combination : public FunctionOperator<ArgsType, ReturnType> {
 public:
-  /**
-   * @brief Factory method to create a Combination with validation
-   * @param first First function f
-   * @param second Second function g
-   * @return Expected containing shared pointer to Combination or error message
-   */
-  static std::expected<std::shared_ptr<Combination>, std::string> create(
-      std::shared_ptr<PrimitiveRecursiveFunction> first,
-      std::shared_ptr<PrimitiveRecursiveFunction> second);
+  Combination(std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
+              ReturnType >>> first,
+              std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
+              ReturnType >>> second)
+      : FunctionOperator<ArgsType, ReturnType>(first->getArity()),
+        first_(first),
+        second_(std::move(second)),
+        construction_error_("") {
+    if (auto error = validate(first_, second_)) {
+      construction_error_ = *error;
+    }
+  }
 
   std::string toString() const override {
     return "Combination(" + first_->toString() + " x " + second_->toString() +
@@ -52,31 +56,76 @@ public:
   std::string getName() const override { return "Combination"; }
 
 protected:
-  std::expected<unsigned int, std::string> function(
-      const std::vector<unsigned int>& args) const override;
+  std::expected<std::vector<ReturnType>, std::string> function(
+      const std::vector<ArgsType>& args) const override;
 
 private:
-  /**
-   * @brief Private constructor - use create() factory method instead
-   */
-  Combination(std::shared_ptr<PrimitiveRecursiveFunction> first,
-              std::shared_ptr<PrimitiveRecursiveFunction> second, int arity)
-      : FunctionOperator(arity),
-        first_(first),
-        second_(std::move(second)),
-        construction_error_("") {}
-
   /**
    * @brief Validates combination structure
    * @return std::nullopt if valid, error message otherwise
    */
   static std::optional<std::string> validate(
-      const std::shared_ptr<PrimitiveRecursiveFunction>& first,
-      const std::shared_ptr<PrimitiveRecursiveFunction>& second);
+      const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
+          first,
+      const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
+          second);
 
-  std::shared_ptr<PrimitiveRecursiveFunction> first_;
-  std::shared_ptr<PrimitiveRecursiveFunction> second_;
+  std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
+      ReturnType >>> first_;
+  std::shared_ptr < PrimitiveRecursiveFunction < ArgsType,
+      ReturnType >>> second_;
   std::string construction_error_;
 };
+
+template <typename ArgsType, typename ReturnType>
+inline std::expected<std::vector<ReturnType>, std::string>
+Combination<ArgsType, ReturnType>::function(
+    const std::vector<ArgsType>& args) const {
+  if (!construction_error_.empty()) {
+    return std::unexpected("Cannot execute combination: " +
+                           construction_error_);
+  }
+  if (auto error = this->validateArity(args)) {
+    return std::unexpected(*error);
+  }
+
+  // Apply both functions to the arguments
+  auto first_result = first_->apply(args);
+  if (!first_result.has_value()) {
+    return std::unexpected("First function failed: " + first_result.error());
+  }
+
+  auto second_result = second_->apply(args);
+  if (!second_result.has_value()) {
+    return std::unexpected("Second function failed: " + second_result.error());
+  }
+
+  return std::vector<ReturnType>{first_result.value(), second_result.value()};
+}
+
+template <typename ArgsType, typename ReturnType>
+inline std::optional<std::string> Combination<ArgsType, ReturnType>::validate(
+    const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
+        first,
+    const std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
+        second) {
+  if (!first) {
+    return "First function cannot be null";
+  }
+
+  if (!second) {
+    return "Second function cannot be null";
+  }
+
+  // Both functions must have the same arity
+  if (first->getArity() != second->getArity()) {
+    return "Combination requires both functions to have the same arity. First "
+           "has arity " +
+           std::to_string(first->getArity()) + " but second has arity " +
+           std::to_string(second->getArity());
+  }
+
+  return std::nullopt;  // Valid
+}
 
 #endif  // COMBINATION_H

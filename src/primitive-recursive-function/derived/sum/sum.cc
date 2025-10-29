@@ -31,13 +31,15 @@ Sum::Sum(std::shared_ptr<Counter> counter)
   auto successor = std::make_shared<Successor>(counter);
 
   auto projection3_3 = std::make_shared<Projection>(3, 3, counter);
-  auto recursive_case = std::make_shared<Composition>(
-      successor,
-      std::vector<std::shared_ptr<PrimitiveRecursiveFunction>>{projection3_3});
-
-  // Build the PrimitiveRecursion
+  auto recursive_case =
+      std::make_shared<Composition<unsigned int, unsigned int>>(
+          successor,
+          std::vector<std::shared_ptr<
+              PrimitiveRecursiveFunction<unsigned int, unsigned int>>>{
+              projection3_3});
   auto recursion =
-      std::make_shared<PrimitiveRecursion>(base_case, recursive_case);
+      std::make_shared<PrimitiveRecursion<unsigned int, unsigned int>>(
+          base_case, recursive_case);
   implementation_ = recursion;
 }
 

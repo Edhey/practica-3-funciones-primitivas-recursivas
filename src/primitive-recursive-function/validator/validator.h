@@ -34,8 +34,6 @@ public:
 
   static std::optional<std::string> validateNatural(
       const std::vector<int>& args);
-  static std::optional<std::string> validateArity(
-      const std::vector<unsigned int>& args, size_t expected_arity);
   static std::expected<unsigned int, std::string> checkMultiplicationOverflow(
       unsigned int a, unsigned int b);
   static std::expected<unsigned int, std::string> checkAdditionOverflow(

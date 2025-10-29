@@ -29,7 +29,7 @@
  * - sum(x, 0) = x  (base case: P^1_1)
  * - sum(x, s(y)) = s(sum(x, y))  (recursive case: s ∘ P^3_3)
  */
-class Sum : public PrimitiveRecursiveFunction {
+class Sum : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   /**
    * @brief Constructs a Sum function
@@ -44,7 +44,7 @@ protected:
       const std::vector<unsigned int>& args) const override;
 
 private:
-  std::shared_ptr<PrimitiveRecursiveFunction> implementation_;
+  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>> implementation_;
 };
 
 #endif  // SUM_H

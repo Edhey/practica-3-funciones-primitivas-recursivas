@@ -39,21 +39,6 @@ std::optional<std::string> Validator::validateNatural(
 }
 
 /**
- * @brief Validates the arity of arguments
- * @param args Vector of arguments
- * @param expected_arity Expected number of arguments
- * @return std::nullopt if valid, error message otherwise
- */
-std::optional<std::string> Validator::validateArity(
-    const std::vector<unsigned int>& args, size_t expected_arity) {
-  if (args.size() != expected_arity) {
-    return "Expected " + std::to_string(expected_arity) + " arguments, got " +
-           std::to_string(args.size());
-  }
-  return std::nullopt;
-}
-
-/**
  * @brief Checks for potential overflow in multiplication
  * @param operand_1 First operand
  * @param operand_2 Second operand

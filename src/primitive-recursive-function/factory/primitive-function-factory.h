@@ -36,24 +36,24 @@ public:
    * @param counter Shared pointer to call counter
    * @return Shared pointer to Sum function
    */
-  static std::shared_ptr<PrimitiveRecursiveFunction> createSum(
-      std::shared_ptr<Counter> counter);
+  static std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+  createSum(std::shared_ptr<Counter> counter);
 
   /**
    * @brief Creates a Product function
    * @param counter Shared pointer to call counter
    * @return Shared pointer to Product function
    */
-  static std::shared_ptr<PrimitiveRecursiveFunction> createProduct(
-      std::shared_ptr<Counter> counter);
+  static std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+  createProduct(std::shared_ptr<Counter> counter);
 
   /**
    * @brief Creates a Power function
    * @param counter Shared pointer to call counter
    * @return Shared pointer to Power function
    */
-  static std::shared_ptr<PrimitiveRecursiveFunction> createPower(
-      std::shared_ptr<Counter> counter);
+  static std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+  createPower(std::shared_ptr<Counter> counter);
 
   /**
    * @brief Creates a function by name
@@ -62,8 +62,8 @@ public:
    * @return Shared pointer to the requested function
    * @throws std::invalid_argument if function name is not recognized
    */
-  static std::shared_ptr<PrimitiveRecursiveFunction> createFunction(
-      const std::string& name, std::shared_ptr<Counter> counter);
+  static std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+  createFunction(const std::string& name, std::shared_ptr<Counter> counter);
 };
 
 #endif  // FUNCTION_FACTORY_H

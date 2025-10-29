@@ -30,7 +30,7 @@
  * Returns the i-th argument from the input vector.
  * Index is 1-based (P^3_1 returns the first argument).
  */
-class Projection : public PrimitiveRecursiveFunction {
+class Projection : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   /**
    * @brief Private constructor - use create() factory method instead
