@@ -38,8 +38,6 @@ public:
       unsigned int a, unsigned int b);
   static std::expected<unsigned int, std::string> checkAdditionOverflow(
       unsigned int a, unsigned int b);
-  static std::optional<std::string> checkPrimitiveRecursionDepth(
-      unsigned int depth);
   static std::optional<std::string> validateProjectionIndex(size_t index,
                                                             size_t arity);
 };

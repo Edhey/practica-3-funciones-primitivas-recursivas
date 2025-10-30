@@ -71,21 +71,6 @@ std::expected<unsigned int, std::string> Validator::checkAdditionOverflow(
 }
 
 /**
- * @brief Checks if PrimitiveRecursion depth is within safe limits
- * @param depth Current PrimitiveRecursion depth
- * @return std::nullopt if valid, error message otherwise
- */
-std::optional<std::string> Validator::checkPrimitiveRecursionDepth(
-    unsigned int depth) {
-  if (depth > MAX_PrimitiveRecursion_DEPTH) {
-    return "PrimitiveRecursion depth exceeds maximum (" +
-           std::to_string(MAX_PrimitiveRecursion_DEPTH) +
-           "), got: " + std::to_string(depth);
-  }
-  return std::nullopt;
-}
-
-/**
  * @brief Validates that projection index is within bounds
  * @param index Projection index (1-based)
  * @param arity Total number of arguments

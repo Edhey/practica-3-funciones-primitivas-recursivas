@@ -71,7 +71,7 @@ RecursiveFunctionExecution::createFunction() {
 void RecursiveFunctionExecution::printWelcomeMessage() const {
   std::cout << "Primitive Recursive Function Calculator\n"
             << "Operation: " << args_.getOperation() << "\n"
-            << "Enter arguments (natural numbers per line)\n"
+            << "Enter arguments (2 natural numbers per line)\n"
             << "Press Ctrl+D to end\n"
             << std::endl;
 }

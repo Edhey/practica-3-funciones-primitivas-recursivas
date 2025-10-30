@@ -121,9 +121,6 @@ PrimitiveRecursion<ArgsType, ReturnType>::function(
   // where x = [x1, ..., xn] and y is the recursion parameter
   unsigned int y = args.back();
   std::vector<unsigned int> x(args.begin(), args.end() - 1);
-  if (auto error = Validator::checkPrimitiveRecursionDepth(y)) {
-    return std::unexpected(*error);
-  }
 
   // Base case: f(x, 0) = g(x)
   if (y == 0) {
