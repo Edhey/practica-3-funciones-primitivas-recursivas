@@ -234,8 +234,9 @@ PrimitiveRecursiveFunction (Interface)
    - `FileOutputStrategy`: Writes to file
 
 10. **Input Strategies** (Strategy Pattern):
-   - `ConsoleInputStrategy`: Reads from stdin
-   - `FileInputStrategy`: Reads from file
+
+- `ConsoleInputStrategy`: Reads from stdin
+- `FileInputStrategy`: Reads from file
 
 ### Implementation Description
 
@@ -279,6 +280,8 @@ $ ././primitive-recursive-function power -v
 power(2, 10) = 1024
 Function calls: 1050674
 ```
+
+Update: For easy correction verbose mode is always true now.
 
 ---
 

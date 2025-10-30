@@ -25,16 +25,16 @@
 
 void ArgsParser::printUsage(std::string program_name) {
   std::cout << std::format(
-      "Usage: {0} <operation> [<arg1> <arg2> | -i <file>] [options]\n\n"
+      "Usage: {0} [<operation>] [<arg1> <arg2> | -i <file>] [options]\n\n"
       "Operations:\n"
       "  sum, add          Calculate x + y\n"
       "  product, mult     Calculate x * y\n"
-      "  power, pow        Calculate x^y\n\n"
+      "  power, pow        Calculate x^y (DEFAULT)\n\n"
       "Input modes:\n"
-      "  Interactive:      {0} <operation>\n"
+      "  Interactive:      {0} [<operation>]\n"
       "                    (Enter arguments line by line, Ctrl+D to end)\n"
-      "  Command-line:     {0} <operation> <arg1> <arg2>\n"
-      "  File:             {0} <operation> -i <input_file>\n\n"
+      "  Command-line:     {0} [<operation>] <arg1> <arg2>\n"
+      "  File:             {0} [<operation>] -i <input_file>\n\n"
       "Arguments:\n"
       "  <arg1> <arg2>     Two natural numbers (>= 0)\n\n"
       "Options:\n"
@@ -43,9 +43,10 @@ void ArgsParser::printUsage(std::string program_name) {
       "  -v, --verbose        Show function call count\n"
       "  -h, --help           Show this help message\n\n"
       "Examples:\n"
-      "  {0} sum              # Interactive mode\n"
+      "  {0}                  # Interactive mode with power (default)\n"
+      "  {0} sum              # Interactive mode with sum\n"
       "  {0} sum 5 3          # Single calculation\n"
-      "  {0} power 2 10 -v    # With call counter\n"
+      "  {0} 2 10 -v          # Power calculation with call counter\n"
       "  {0} product -i args.txt -o result.txt  # File I/O\n"
       "  {0} pow --verbose\n\n"
       "Input file format (one pair per line):\n"
@@ -63,9 +64,9 @@ void ArgsParser::printUsage(std::string program_name) {
  */
 std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
   if (argc < 2) {
-    std::cerr << "Error: Not enough arguments\n\n";
-    printUsage(argv[0]);
-    return std::nullopt;
+    std::cerr << "No operation specified, using default: power\n";
+    // Use default operation: power -v
+    return ArgsParser("power", {}, "", "", true);
   }
 
   std::string first_arg = argv[1];
@@ -78,8 +79,7 @@ std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
   std::vector<unsigned int> arguments;
   std::string input_file;
   std::string output_file;
-  bool verbose_mode = false;
-  bool trace_mode = false;
+  bool verbose_mode = true;
 
   // Parse arguments and flags
   int i = 2;
@@ -102,8 +102,6 @@ std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
       }
     } else if (arg == "-v" || arg == "--verbose") {
       verbose_mode = true;
-    } else if (arg == "-t" || arg == "--trace") {
-      trace_mode = true;
     } else if (arg == "-h" || arg == "--help") {
       printUsage(argv[0]);
       return std::nullopt;
@@ -142,6 +140,6 @@ std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
     return std::nullopt;
   }
 
-  return ArgsParser(operation, arguments, input_file, output_file, verbose_mode,
-                    trace_mode);
+  return ArgsParser(operation, arguments, input_file, output_file,
+                    verbose_mode);
 }
