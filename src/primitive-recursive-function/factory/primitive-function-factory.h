@@ -17,6 +17,7 @@
 #ifndef FUNCTION_FACTORY_H
 #define FUNCTION_FACTORY_H
 
+#include <expected>
 #include <memory>
 #include <string>
 
@@ -60,9 +61,10 @@ public:
    * @param name Function name ("sum", "product", "power")
    * @param counter Shared pointer to call counter
    * @return Shared pointer to the requested function
-   * @throws std::invalid_argument if function name is not recognized
    */
-  static std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+  static std::expected<
+      std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>,
+      std::string>
   createFunction(const std::string& name, std::shared_ptr<Counter> counter);
 };
 

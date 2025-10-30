@@ -17,14 +17,21 @@
 #include "file-output-strategy.h"
 
 #include <iostream>
-#include <stdexcept>
+
+std::expected<std::unique_ptr<FileOutputStrategy>, std::string>
+FileOutputStrategy::create(const std::string& filename) {
+  auto strategy =
+      std::unique_ptr<FileOutputStrategy>(new FileOutputStrategy(filename));
+
+  if (!strategy->file_.is_open()) {
+    return std::unexpected("Could not open file: " + filename);
+  }
+
+  return strategy;
+}
 
 FileOutputStrategy::FileOutputStrategy(const std::string& filename)
-    : file_(filename) {
-  if (!file_.is_open()) {
-    throw std::runtime_error("Could not open file: " + filename);
-  }
-}
+    : file_(filename) {}
 
 void FileOutputStrategy::writeResult(const std::string& operation,
                                      const std::vector<unsigned int>& args,

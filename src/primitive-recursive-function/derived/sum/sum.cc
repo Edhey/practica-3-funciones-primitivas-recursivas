@@ -22,7 +22,7 @@
 #include "../../primitives/successor/successor.h"
 
 Sum::Sum(std::shared_ptr<Counter> counter)
-    : PrimitiveRecursiveFunction(counter, 2), implementation_(nullptr) {
+    : PrimitiveRecursiveFunction(counter, 2) {
   // sum(x, 0) = x
   // Base case: g(x) = P^1_1(x) = x
   auto base_case = std::make_shared<Projection>(1, 1, counter);
@@ -39,7 +39,7 @@ Sum::Sum(std::shared_ptr<Counter> counter)
               projection3_3});
   auto recursion =
       std::make_shared<PrimitiveRecursion<unsigned int, unsigned int>>(
-          base_case, recursive_case);
+          base_case, recursive_case, counter);
   implementation_ = recursion;
 }
 

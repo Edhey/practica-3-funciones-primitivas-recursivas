@@ -40,20 +40,14 @@ Power::Power(std::shared_ptr<Counter> counter)
   auto product = std::make_shared<Product>(counter);
   auto projection3_1 = std::make_shared<Projection>(3, 1, counter);
   auto projection3_3 = std::make_shared<Projection>(3, 3, counter);
-
-  // Create combination: (P³₁ × P³₃)
   auto combination = std::make_shared<Combination<unsigned int, unsigned int>>(
       projection3_1, projection3_3);
-
-  // Compose: product ∘ (P³₁ × P³₃)
   auto recursive_case =
       std::make_shared<Composition<unsigned int, unsigned int>>(product,
                                                                 combination);
-
-  // Build primitive recursion
   auto recursion =
       std::make_shared<PrimitiveRecursion<unsigned int, unsigned int>>(
-          base_case, recursive_case);
+          base_case, recursive_case, counter);
 
   implementation_ = recursion;
 }

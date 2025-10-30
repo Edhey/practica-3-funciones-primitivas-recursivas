@@ -67,9 +67,9 @@ protected:
    */
   virtual std::expected<ReturnType, std::string> function(
       const std::vector<ArgsType>& args) const = 0;
+  std::shared_ptr<Counter> counter_;
 
 private:
-  std::shared_ptr<Counter> counter_;
   int arity_;
 };
 
@@ -100,9 +100,7 @@ template <typename ArgsType, typename ReturnType>
 inline std::expected<ReturnType, std::string>
 PrimitiveRecursiveFunction<ArgsType, ReturnType>::apply(
     const std::vector<ArgsType>& args) const {
-  if (counter_) {
-    counter_->Increment();
-  }
+  counter_->Increment();
 
   if (auto error = this->validateArity(args)) {
     return std::unexpected(*error);

@@ -17,7 +17,9 @@
 #ifndef FILE_OUTPUT_STRATEGY_H
 #define FILE_OUTPUT_STRATEGY_H
 
+#include <expected>
 #include <fstream>
+#include <memory>
 #include <string>
 
 #include "../output-strategy.h"
@@ -27,7 +29,14 @@
  */
 class FileOutputStrategy : public OutputStrategy {
 public:
-  explicit FileOutputStrategy(const std::string& filename);
+  /**
+   * @brief Factory method to create FileOutputStrategy
+   * @param filename Path to the output file
+   * @return std::expected with FileOutputStrategy or error message
+   */
+  static std::expected<std::unique_ptr<FileOutputStrategy>, std::string> create(
+      const std::string& filename);
+
   ~FileOutputStrategy() override = default;
 
   std::ostream& getStream() override { return file_; }
@@ -37,6 +46,7 @@ public:
                    unsigned int call_count = 0) override;
 
 private:
+  explicit FileOutputStrategy(const std::string& filename);
   std::ofstream file_;
 };
 

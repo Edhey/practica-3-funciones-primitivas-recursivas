@@ -43,10 +43,12 @@ public:
       std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
           base_case,
       std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
-          recursive_case)
+          recursive_case,
+      std::shared_ptr<Counter> counter = nullptr)
       : FunctionOperator<ArgsType, ReturnType>(base_case->getArity() + 1),
         base_case_(base_case),
         recursive_case_(std::move(recursive_case)),
+        recursion_counter_(counter),
         construction_error_("") {
     if (auto error = validate(base_case_, recursive_case_)) {
       construction_error_ = *error;
@@ -70,6 +72,7 @@ private:
   std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>> base_case_;
   std::shared_ptr<PrimitiveRecursiveFunction<ArgsType, ReturnType>>
       recursive_case_;
+  std::shared_ptr<Counter> recursion_counter_;
   std::string construction_error_;
 };
 
@@ -118,8 +121,6 @@ PrimitiveRecursion<ArgsType, ReturnType>::function(
   // where x = [x1, ..., xn] and y is the recursion parameter
   unsigned int y = args.back();
   std::vector<unsigned int> x(args.begin(), args.end() - 1);
-
-  // Check recursion depth
   if (auto error = Validator::checkPrimitiveRecursionDepth(y)) {
     return std::unexpected(*error);
   }
@@ -138,6 +139,7 @@ PrimitiveRecursion<ArgsType, ReturnType>::function(
   std::vector<unsigned int> recursive_args = x;
   recursive_args.push_back(y - 1);
 
+  recursion_counter_->Increment();
   // Compute f(x, y-1) recursively
   auto recursive_result = this->apply(recursive_args);
   if (!recursive_result.has_value()) {
@@ -156,7 +158,6 @@ PrimitiveRecursion<ArgsType, ReturnType>::function(
     return std::unexpected("Recursive case function failed: " +
                            h_result.error());
   }
-
   return h_result.value();
 }
 

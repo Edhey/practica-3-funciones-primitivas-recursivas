@@ -41,14 +41,13 @@ void ArgsParser::printUsage(std::string program_name) {
       "  -i, --input <file>   Read arguments from file (one pair per line)\n"
       "  -o, --output <file>  Write results to file\n"
       "  -v, --verbose        Show function call count\n"
-      "  -t, --trace          Show detailed execution trace\n"
       "  -h, --help           Show this help message\n\n"
       "Examples:\n"
       "  {0} sum              # Interactive mode\n"
       "  {0} sum 5 3          # Single calculation\n"
       "  {0} power 2 10 -v    # With call counter\n"
       "  {0} product -i args.txt -o result.txt  # File I/O\n"
-      "  {0} pow 3 4 --trace --verbose\n\n"
+      "  {0} pow --verbose\n\n"
       "Input file format (one pair per line):\n"
       "  5 3\n"
       "  2 10\n"
@@ -56,6 +55,12 @@ void ArgsParser::printUsage(std::string program_name) {
       program_name);
 }
 
+/**
+ * @brief Parses command-line arguments
+ * @param argc Argument count
+ * @param argv Argument vector
+ * @return Optional ArgsParser instance if successful, std::nullopt on error
+ */
 std::optional<ArgsParser> ArgsParser::parse(int argc, char const* argv[]) {
   if (argc < 2) {
     std::cerr << "Error: Not enough arguments\n\n";

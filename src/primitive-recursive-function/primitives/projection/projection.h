@@ -30,14 +30,9 @@
  * Returns the i-th argument from the input vector.
  * Index is 1-based (P^3_1 returns the first argument).
  */
-class Projection : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
+class Projection
+    : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
-  /**
-   * @brief Private constructor - use create() factory method instead
-   * @param arity Total number of arguments (n)
-   * @param index Index of the argument to project (i), 1-based
-   * @param counter Shared pointer to call counter
-   */
   Projection(size_t arity, size_t index, std::shared_ptr<Counter> counter)
       : PrimitiveRecursiveFunction(counter, arity), index_(index) {}
 
@@ -46,8 +41,8 @@ public:
   }
 
 private:
-std::expected<unsigned int, std::string> function(
-    const std::vector<unsigned int>& args) const override;
+  std::expected<unsigned int, std::string> function(
+      const std::vector<unsigned int>& args) const override;
   size_t index_;
 };
 

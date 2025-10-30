@@ -9,25 +9,29 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/primitive-recursive-function",
-      "args": ["pow", "-v"],
+      "args": [
+        "sum",
+        "-v",
+        "2",
+        "1"
+      ],
       "stopAtEntry": true,
       "cwd": "${workspaceFolder}/build",
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
       "setupCommands": [
-          {
-              "description": "Enable pretty-printing for gdb",
-              "text": "-enable-pretty-printing",
-              "ignoreFailures": true
-          },
-          {
-              "description": "Set Disassembly Flavor to Intel",
-              "text": "-gdb-set disassembly-flavor intel",
-              "ignoreFailures": true
-          }
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
       ]
     }
-
   ]
 }

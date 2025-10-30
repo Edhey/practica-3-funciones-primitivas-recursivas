@@ -44,7 +44,8 @@ protected:
       const std::vector<unsigned int>& args) const override;
 
 private:
-  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>> implementation_;
+  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+      implementation_;
 };
 
 #endif  // POWER_H

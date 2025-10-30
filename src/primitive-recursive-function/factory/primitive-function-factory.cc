@@ -35,7 +35,9 @@ FunctionFactory::createPower(std::shared_ptr<Counter> counter) {
   return std::make_shared<Power>(counter);
 }
 
-std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+std::expected<
+    std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>,
+    std::string>
 FunctionFactory::createFunction(const std::string& name,
                                 std::shared_ptr<Counter> counter) {
   if (name == "sum" || name == "add" || name == "addition") {
@@ -47,6 +49,6 @@ FunctionFactory::createFunction(const std::string& name,
              name == "exponentiation") {
     return createPower(counter);
   } else {
-    throw std::invalid_argument("Unknown function: " + name);
+    return std::unexpected("Unknown function: " + name);
   }
 }
