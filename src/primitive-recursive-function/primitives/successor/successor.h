@@ -28,7 +28,8 @@
  *
  * Returns the successor (n + 1) of the input argument.
  */
-class Successor : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
+class Successor
+    : public PrimitiveRecursiveFunction<unsigned int, unsigned int> {
 public:
   /**
    * @brief Constructs a Successor function

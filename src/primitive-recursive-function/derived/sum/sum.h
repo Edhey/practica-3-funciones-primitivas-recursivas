@@ -19,8 +19,8 @@
 
 #include <memory>
 
-#include "../../primitive-recursive-function.h"
 #include "counter/counter.h"
+#include "primitive-recursive-function/primitive-recursive-function.h"
 
 /**
  * @brief Sum function: sum(x, y) = x + y

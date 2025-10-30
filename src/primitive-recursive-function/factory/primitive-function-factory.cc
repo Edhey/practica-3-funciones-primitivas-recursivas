@@ -16,9 +16,9 @@
 
 #include "primitive-function-factory.h"
 
-#include "../derived/power/power.h"
-#include "../derived/product/product.h"
-#include "../derived/sum/sum.h"
+#include "primitive-recursive-function/derived/product/product.h"
+#include "primitive-recursive-function/derived/power/power.h"
+#include "primitive-recursive-function/derived/sum/sum.h"
 
 std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
 FunctionFactory::createSum(std::shared_ptr<Counter> counter) {

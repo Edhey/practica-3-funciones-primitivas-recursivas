@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include "../output-strategy.h"
+#include "io/output-strategy/output-strategy.h"
 
 /**
  * @brief Strategy for writing output to console

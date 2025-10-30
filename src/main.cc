@@ -16,8 +16,8 @@
 
 #include <iostream>
 
-#include "execution/recursive-function-execution.h"
 #include "parser/args-parser.h"
+#include "primitive-recursive-function/execution/recursive-function-execution.h"
 
 int main(int argc, char const* argv[]) {
   auto args_opt = ArgsParser::parse(argc, argv);

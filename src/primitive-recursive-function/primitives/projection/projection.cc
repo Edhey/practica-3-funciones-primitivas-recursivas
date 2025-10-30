@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "projection.h"
+#include "primitive-recursive-function/primitives/projection/projection.h"
 
 std::expected<unsigned int, std::string> Projection::function(
     const std::vector<unsigned int>& args) const {

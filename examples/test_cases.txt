@@ -1,0 +1,50 @@
+# Test cases for primitive recursive functions
+# Format: <arg1> <arg2>
+# Lines starting with # are comments
+
+# Sum tests
+5 3
+10 0
+0 10
+15 25
+
+# Product tests (reuse this file with different operation)
+7 8
+12 5
+0 100
+
+# Power tests (reuse this file with different operation)
+2 10
+3 4
+5 0
+10 1
+
+## Sum tests
+sum 0 0     = 0
+sum 1 0     = 1
+sum 0 1     = 1
+sum 5 3     = 8
+sum 10 20   = 30
+sum 100 200 = 300
+
+## Product tests
+product 0 0    = 0
+product 5 0    = 0
+product 0 5    = 0
+product 1 1    = 1
+product 3 4    = 12
+product 7 8    = 56
+product 10 10  = 100
+
+## Power tests
+power 0 0  = 1
+power 2 0  = 1
+power 0 5  = 0
+power 2 3  = 8
+power 3 4  = 81
+power 5 2  = 25
+power 10 3 = 1000
+
+## Edge cases
+power 2 10 = 1024
+power 2 20 = 1048576

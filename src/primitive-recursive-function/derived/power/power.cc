@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "power.h"
+#include "primitive-recursive-function/derived/power/power.h"
 
 #include "primitive-recursive-function/derived/product/product.h"
 #include "primitive-recursive-function/operators/combination/combination.h"

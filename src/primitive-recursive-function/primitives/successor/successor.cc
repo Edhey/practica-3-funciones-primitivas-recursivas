@@ -14,9 +14,8 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "successor.h"
-
-#include "../../validator/validator.h"
+#include "primitive-recursive-function/primitives/successor/successor.h"
+#include "primitive-recursive-function/validator/validator.h"
 
 std::expected<unsigned int, std::string> Successor::function(
     const std::vector<unsigned int>& args) const {

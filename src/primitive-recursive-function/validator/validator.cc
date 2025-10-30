@@ -29,9 +29,9 @@ std::optional<std::string> Validator::validateNatural(
              " must be a natural number (>= 0), got: " +
              std::to_string(args[i]);
     }
-    if (static_cast<unsigned int>(args[i]) > MAX_SAFE_VALUE) {
+    if (static_cast<unsigned int>(args[i]) > kMaxSafeValue) {
       return "Argument " + std::to_string(i + 1) +
-             " exceeds maximum safe value (" + std::to_string(MAX_SAFE_VALUE) +
+             " exceeds maximum safe value (" + std::to_string(kMaxSafeValue) +
              "), got: " + std::to_string(args[i]);
     }
   }

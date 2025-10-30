@@ -23,8 +23,8 @@
 #include <vector>
 
 #include "counter/counter.h"
-#include "input-strategy/input-strategy.h"
-#include "output-strategy/output-strategy.h"
+#include "io/input-strategy/input-strategy.h"
+#include "io/output-strategy/output-strategy.h"
 #include "parser/args-parser.h"
 #include "primitive-recursive-function/primitive-recursive-function.h"
 

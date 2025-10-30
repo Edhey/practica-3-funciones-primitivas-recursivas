@@ -21,8 +21,8 @@
 #include <memory>
 #include <string>
 
-#include "../../counter/counter.h"
-#include "../primitive-recursive-function.h"
+#include "counter/counter.h"
+#include "primitive-recursive-function/primitive-recursive-function.h"
 
 /**
  * @brief Factory for creating primitive recursive functions

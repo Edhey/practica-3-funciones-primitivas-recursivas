@@ -18,10 +18,10 @@
 
 #include <iostream>
 
-#include "input-strategy/console/console-input-strategy.h"
-#include "input-strategy/file/file-input-strategy.h"
-#include "output-strategy/console/console-output-strategy.h"
-#include "output-strategy/file/file-output-strategy.h"
+#include "io/input-strategy/console/console-input-strategy.h"
+#include "io/input-strategy/file/file-input-strategy.h"
+#include "io/output-strategy/console/console-output-strategy.h"
+#include "io/output-strategy/file/file-output-strategy.h"
 #include "primitive-recursive-function/factory/primitive-function-factory.h"
 #include "primitive-recursive-function/validator/validator.h"
 

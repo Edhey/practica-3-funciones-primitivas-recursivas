@@ -29,8 +29,7 @@
  */
 class Validator {
 public:
-  static constexpr unsigned int MAX_SAFE_VALUE = 1000000;
-  static constexpr unsigned int MAX_PrimitiveRecursion_DEPTH = 10000;
+  static constexpr unsigned int kMaxSafeValue = 1000000;
 
   static std::optional<std::string> validateNatural(
       const std::vector<int>& args);

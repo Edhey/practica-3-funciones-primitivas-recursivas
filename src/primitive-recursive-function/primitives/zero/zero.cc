@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "zero.h"
+#include "primitive-recursive-function/primitives/zero/zero.h"
 
 /**
  * @brief Implements the zero primitive function

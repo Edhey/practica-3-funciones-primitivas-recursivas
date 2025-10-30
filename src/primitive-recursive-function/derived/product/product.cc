@@ -16,12 +16,12 @@
 
 #include "product.h"
 
-#include "../../operators/combination/combination.h"
-#include "../../operators/composition/composition.h"
-#include "../../operators/primitive-recursion/primitive-recursion.h"
-#include "../../primitives/projection/projection.h"
-#include "../../primitives/zero/zero.h"
-#include "../sum/sum.h"
+#include "primitive-recursive-function/derived/sum/sum.h"
+#include "primitive-recursive-function/operators/combination/combination.h"
+#include "primitive-recursive-function/operators/composition/composition.h"
+#include "primitive-recursive-function/operators/primitive-recursion/primitive-recursion.h"
+#include "primitive-recursive-function/primitives/projection/projection.h"
+#include "primitive-recursive-function/primitives/zero/zero.h"
 
 Product::Product(std::shared_ptr<Counter> counter)
     : PrimitiveRecursiveFunction(counter, 2), implementation_(nullptr) {

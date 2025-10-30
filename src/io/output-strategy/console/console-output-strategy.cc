@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "console-output-strategy.h"
+#include "io/output-strategy/console/console-output-strategy.h"
 
 void ConsoleOutputStrategy::writeResult(const std::string& operation,
                                         const std::vector<unsigned int>& args,

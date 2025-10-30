@@ -22,7 +22,7 @@
 #include <memory>
 #include <string>
 
-#include "../output-strategy.h"
+#include "io/output-strategy/output-strategy.h"
 
 /**
  * @brief Strategy for writing output to a file

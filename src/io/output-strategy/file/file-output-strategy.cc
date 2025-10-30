@@ -14,9 +14,9 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "file-output-strategy.h"
-
 #include <iostream>
+
+#include "io/output-strategy/file/file-output-strategy.h"
 
 std::expected<std::unique_ptr<FileOutputStrategy>, std::string>
 FileOutputStrategy::create(const std::string& filename) {

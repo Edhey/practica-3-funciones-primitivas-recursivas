@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "file-input-strategy.h"
+#include "io/input-strategy/file/file-input-strategy.h"
 
 #include <iostream>
 

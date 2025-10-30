@@ -14,12 +14,12 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "sum.h"
+#include "primitive-recursive-function/derived/sum/sum.h"
 
-#include "../../operators/composition/composition.h"
-#include "../../operators/primitive-recursion/primitive-recursion.h"
-#include "../../primitives/projection/projection.h"
-#include "../../primitives/successor/successor.h"
+#include "primitive-recursive-function/operators/composition/composition.h"
+#include "primitive-recursive-function/operators/primitive-recursion/primitive-recursion.h"
+#include "primitive-recursive-function/primitives/projection/projection.h"
+#include "primitive-recursive-function/primitives/successor/successor.h"
 
 Sum::Sum(std::shared_ptr<Counter> counter)
     : PrimitiveRecursiveFunction(counter, 2), implementation_(nullptr) {

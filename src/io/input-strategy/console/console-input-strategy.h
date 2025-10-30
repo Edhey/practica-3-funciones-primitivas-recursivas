@@ -8,50 +8,38 @@
  * @author Himar Edhey Hernández Alonso
  * @mail: alu0101552392@ull.edu.es
  * @date Oct 29 2025
- * @file file-input-strategy.h
- * @brief File input strategy for reading arguments from file
+ * @file console-input-strategy.h
+ * @brief Console input strategy for interactive argument reading
  * @bug There are no known bugs
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#ifndef FILE_INPUT_STRATEGY_H
-#define FILE_INPUT_STRATEGY_H
+#ifndef CONSOLE_INPUT_STRATEGY_H
+#define CONSOLE_INPUT_STRATEGY_H
 
-#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "../input-strategy.h"
+#include "io/input-strategy/input-strategy.h"
 
 /**
- * @brief Strategy for reading arguments from a file
+ * @brief Strategy for reading arguments from console (stdin)
  */
-class FileInputStrategy : public InputStrategy {
+class ConsoleInputStrategy : public InputStrategy {
 public:
-  /**
-   * @brief Constructs a FileInputStrategy
-   * @param filename Path to the input file
-   */
-  explicit FileInputStrategy(const std::string& filename);
-  ~FileInputStrategy() override;
+  ConsoleInputStrategy() = default;
+  ~ConsoleInputStrategy() override = default;
 
   /**
-   * @brief Gets the next set of arguments from file
+   * @brief Gets the next set of arguments from console
    * @param args Reference to store the parsed arguments
    * @return true if input was read successfully, false on EOF or error
    */
   bool getNextInput(std::vector<unsigned int>& args) override;
 
-  /**
-   * @brief Checks if the file is open and ready
-   * @return true if file is open, false otherwise
-   */
-  bool isOpen() const { return file_.is_open(); }
-
 private:
-  std::ifstream file_;
-
   /**
    * @brief Parses a line into unsigned integers
    * @param line Line to parse
@@ -61,4 +49,4 @@ private:
   bool parseLine(const std::string& line, std::vector<unsigned int>& args);
 };
 
-#endif  // FILE_INPUT_STRATEGY_H
+#endif  // CONSOLE_INPUT_STRATEGY_H

@@ -14,7 +14,7 @@
  * @see https://github.com/Edhey/practica-3-funciones-primitivas-recursivas.git
  */
 
-#include "console-input-strategy.h"
+#include "io/input-strategy/console/console-input-strategy.h"
 
 bool ConsoleInputStrategy::getNextInput(std::vector<unsigned int>& args) {
   args.clear();

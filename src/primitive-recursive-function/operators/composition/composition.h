@@ -9,7 +9,7 @@
  * @mail: alu0101552392@ull.edu.es
  * @date Oct 27 2025
  * @file composition.h
- * @brief Composition combinator: h = f ∘ (g1, g2, ..., gm): N^n -> N
+ * @brief Composition: h = f ∘ (g1, g2, ..., gm): N^n -> N
  *                        f: N^m -> N
  *                        gi,i = 1..m
  *                        gi: N^n -> N
