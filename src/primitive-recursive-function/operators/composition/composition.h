@@ -66,7 +66,6 @@ public:
         inner_single_(),
         combination_(combination),
         construction_error_("") {
-    // Validate that outer arity matches combination output size (2)
     if (outer->getArity() != 2) {
       construction_error_ = "Outer function arity (" +
                             std::to_string(outer->getArity()) +

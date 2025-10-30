@@ -95,10 +95,10 @@ private:
 
   const ArgsParser& args_;
   std::shared_ptr<Counter> counter_;
-  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
-      function_;
   std::unique_ptr<InputStrategy> input_strategy_;
   std::unique_ptr<OutputStrategy> output_strategy_;
+  std::shared_ptr<PrimitiveRecursiveFunction<unsigned int, unsigned int>>
+      function_;
 };
 
 #endif  // RECURSIVE_FUNCTION_EXECUTION_H
